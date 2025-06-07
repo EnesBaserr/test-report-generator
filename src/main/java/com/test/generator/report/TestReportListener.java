@@ -45,14 +45,23 @@ public class TestReportListener implements TestExecutionListener {
                 }
             }
 
+            // Get the full error message including the assertion message
             String message = result.getThrowable()
-                    .map(Throwable::toString)
+                    .map(throwable -> {
+                        String msg = throwable.getMessage();
+                        if (throwable instanceof AssertionError) {
+                            // For assertion errors, include the full message
+                            return msg != null ? msg : throwable.toString();
+                        }
+                        // For other errors, include the full stack trace
+                        return throwable.toString();
+                    })
                     .orElse("");
 
             results.add(new TestResult(
                     className,
                     methodName,
-                    result.getStatus().toString(),
+                    result.getStatus().name(),
                     message
             ));
         }
