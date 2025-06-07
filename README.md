@@ -13,56 +13,120 @@ A JUnit 5 test execution listener that automatically generates beautiful HTML re
 
 ## Installation
 
-### 1. Configure GitHub Packages Repository
+### Maven
 
-First, you need to authenticate with GitHub Packages. Create or edit `~/.m2/settings.xml`:
-
-```xml
-<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
-    <servers>
-        <server>
-            <id>github</id>
-            <username>YOUR_GITHUB_USERNAME</username>
-            <password>YOUR_GITHUB_PAT</password>
-        </server>
-    </servers>
-
-    <profiles>
-        <profile>
-            <id>github</id>
-            <repositories>
-                <repository>
-                    <id>github</id>
-                    <url>https://maven.pkg.github.com/EnesBaserr/test-report-generator</url>
-                </repository>
-            </repositories>
-        </profile>
-    </profiles>
-
-    <activeProfiles>
-        <activeProfile>github</activeProfile>
-    </activeProfiles>
-</settings>
-```
-
-Replace:
-
-- `YOUR_GITHUB_USERNAME` with your GitHub username
-- `YOUR_GITHUB_PAT` with a GitHub Personal Access Token that has `read:packages` permission
-
-### 2. Add Dependency
-
-Add the following to your project's `pom.xml`:
+Add this to your `pom.xml`:
 
 ```xml
 <dependency>
     <groupId>com.test.generator</groupId>
     <artifactId>test-report-generator</artifactId>
     <version>1.0.0</version>
-    <scope>test</scope>
 </dependency>
+```
+
+### Gradle
+
+Add this to your `build.gradle`:
+
+```groovy
+dependencies {
+    implementation 'com.test.generator:test-report-generator:1.0.0'
+}
+```
+
+### Required Dependencies
+
+The project requires JUnit 5.9.3 or higher. Here are the minimum required dependencies:
+
+```xml
+<properties>
+    <!-- You can use 5.9.3 or any newer version -->
+    <junit.jupiter.version>5.9.3</junit.jupiter.version>
+    <junit.platform.version>1.9.3</junit.platform.version>
+</properties>
+
+<dependencies>
+    <!-- JUnit Jupiter API for writing tests -->
+    <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-api</artifactId>
+        <version>${junit.jupiter.version}</version>
+        <scope>test</scope>
+    </dependency>
+
+    <!-- JUnit Jupiter Engine for running tests -->
+    <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-engine</artifactId>
+        <version>${junit.jupiter.version}</version>
+        <scope>test</scope>
+    </dependency>
+
+    <!-- JUnit Platform Launcher -->
+    <dependency>
+        <groupId>org.junit.platform</groupId>
+        <artifactId>junit-platform-launcher</artifactId>
+        <version>${junit.platform.version}</version>
+    </dependency>
+</dependencies>
+```
+
+For Gradle users:
+
+```groovy
+dependencies {
+    // You can use 5.9.3 or any newer version
+    def junitVersion = '5.9.3'
+    testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
+    implementation "org.junit.platform:junit-platform-launcher:1.9.3"
+}
+```
+
+Note: The test report generator is compatible with:
+
+- JUnit Jupiter 5.9.3 or higher
+- JUnit Platform 1.9.3 or higher
+- Java 15 or higher
+
+We recommend using the latest stable versions of JUnit for best results.
+
+### GitHub Packages Configuration
+
+To use this package from GitHub Packages, add this to your Maven `settings.xml`:
+
+```xml
+<settings>
+  <servers>
+    <server>
+      <id>github</id>
+      <username>${github.username}</username>
+      <password>${github.token}</password>
+    </server>
+  </servers>
+
+  <repositories>
+    <repository>
+      <id>github</id>
+      <url>https://maven.pkg.github.com/EnesBaserr/test-report-generator</url>
+    </repository>
+  </repositories>
+</settings>
+```
+
+For Gradle, add to your `build.gradle`:
+
+```groovy
+repositories {
+    maven {
+        url = uri("https://maven.pkg.github.com/EnesBaserr/test-report-generator")
+        credentials {
+            username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
+            password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
+        }
+    }
+}
 ```
 
 ## Usage
