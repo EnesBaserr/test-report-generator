@@ -112,7 +112,3 @@ This will:
 - Run the tests
 - Generate the JAR file
 - Create source and javadoc JARs
-
-## License
-
-This project is open source and available under the MIT License.
