@@ -13,7 +13,48 @@ A JUnit 5 test execution listener that automatically generates beautiful HTML re
 
 ## Installation
 
-Add the following dependency to your `pom.xml`:
+### 1. Configure GitHub Packages Repository
+
+First, you need to authenticate with GitHub Packages. Create or edit `~/.m2/settings.xml`:
+
+```xml
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+    <servers>
+        <server>
+            <id>github</id>
+            <username>YOUR_GITHUB_USERNAME</username>
+            <password>YOUR_GITHUB_PAT</password>
+        </server>
+    </servers>
+
+    <profiles>
+        <profile>
+            <id>github</id>
+            <repositories>
+                <repository>
+                    <id>github</id>
+                    <url>https://maven.pkg.github.com/EnesBaserr/test-report-generator</url>
+                </repository>
+            </repositories>
+        </profile>
+    </profiles>
+
+    <activeProfiles>
+        <activeProfile>github</activeProfile>
+    </activeProfiles>
+</settings>
+```
+
+Replace:
+
+- `YOUR_GITHUB_USERNAME` with your GitHub username
+- `YOUR_GITHUB_PAT` with a GitHub Personal Access Token that has `read:packages` permission
+
+### 2. Add Dependency
+
+Add the following to your project's `pom.xml`:
 
 ```xml
 <dependency>
@@ -37,7 +78,7 @@ No additional configuration is needed!
 ## Requirements
 
 - Java 15 or higher
-- JUnit 5.10.0 or higher
+- JUnit 5.9.3 or higher
 - Maven 3.6.0 or higher
 
 ## Report Location
