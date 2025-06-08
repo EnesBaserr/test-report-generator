@@ -6,7 +6,7 @@
 
     <groupId>com.test.generator</groupId>
     <artifactId>test-report-generator</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <packaging>jar</packaging>
     
     <name>JUnit5 Test Report Generator</name>
