@@ -160,6 +160,7 @@ The HTML report includes:
 - Overall test execution summary
 - Test results grouped by class
 - Detailed error messages and stack traces
+- Test execution duration for each test and overall suite
 - Clean, modern UI with collapsible sections
 
 ## Building from Source
