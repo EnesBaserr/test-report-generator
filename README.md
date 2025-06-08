@@ -102,7 +102,20 @@ We recommend using the latest stable versions of JUnit for best results.
 
 ### GitHub Packages Configuration
 
-To use this package from GitHub Packages, add this to your Maven `settings.xml`:
+To use this package from GitHub Packages, you need to configure both your `pom.xml` and `settings.xml`:
+
+1. Add this to your project's `pom.xml`:
+
+```xml
+<repositories>
+    <repository>
+        <id>github</id>
+        <url>https://maven.pkg.github.com/EnesBaserr/test-report-generator</url>
+    </repository>
+</repositories>
+```
+
+2. Add this to your Maven `settings.xml` (usually in `~/.m2/settings.xml`):
 
 ```xml
 <settings>
@@ -113,13 +126,6 @@ To use this package from GitHub Packages, add this to your Maven `settings.xml`:
       <password>${github.token}</password>
     </server>
   </servers>
-
-  <repositories>
-    <repository>
-      <id>github</id>
-      <url>https://maven.pkg.github.com/EnesBaserr/test-report-generator</url>
-    </repository>
-  </repositories>
 </settings>
 ```
 
