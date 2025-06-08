@@ -121,16 +121,11 @@ public class TestReportListener implements TestExecutionListener {
                     }
                 }
                 
-                System.out.println("Full class name: " + fullClassName);
-                System.out.println("Method name: " + methodName);
+        
                 
                 if (fullClassName != null) {
                     Class<?> testClass = Class.forName(fullClassName);
-                    // Print all available methods for debugging
-                    System.out.println("Available methods in class:");
-                    for (java.lang.reflect.Method method : testClass.getDeclaredMethods()) {
-                        System.out.println(" - " + method.getName());
-                    }
+                    
                     
                     java.lang.reflect.Method method = testClass.getDeclaredMethod(methodName);
                     Priority priorityAnnotation = method.getAnnotation(Priority.class);
@@ -139,7 +134,6 @@ public class TestReportListener implements TestExecutionListener {
                     }
                 }
             } catch (Exception e) {
-                System.err.println("Failed to get priority annotation: " + e.getMessage());
                 e.printStackTrace();
             }
 
