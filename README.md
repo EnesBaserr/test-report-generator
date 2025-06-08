@@ -72,6 +72,14 @@ The project requires JUnit 5.9.3 or higher. Here are the minimum required depend
 </dependencies>
 ```
 
+> **Note**: These dependencies are often automatically included if you're using:
+>
+> - `spring-boot-starter-test`
+> - `mockito-junit-jupiter`
+> - Other testing frameworks that depend on JUnit 5
+>
+> In such cases, you don't need to declare them explicitly unless you need a specific version.
+
 For Gradle users:
 
 ```groovy
