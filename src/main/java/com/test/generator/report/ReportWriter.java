@@ -157,15 +157,35 @@ public class ReportWriter {
         long error = results.stream().filter(r -> "ERROR".equals(r.status)).count();
         long classDuration = results.stream().mapToLong(r -> r.durationMillis).sum();
         
+        // Calculate average resource usage for the class
+        double avgMemoryUsage = results.stream()
+            .mapToLong(r -> r.resources.memoryUsageMB)
+            .average()
+            .orElse(0.0);
+        double avgCpuUsage = results.stream()
+            .mapToDouble(r -> r.resources.cpuUsagePercent)
+            .average()
+            .orElse(0.0);
+        
         sb.append(String.format("""
             <div class="test-class">
                 <div class="class-header">
                     <div class="class-info">
                         <span>%s</span>
-                        <span class="class-duration">
-                            <img src='static/icons/clock.svg' class='icon' alt='duration'>
-                            %s
-                        </span>
+                        <div class="class-metrics">
+                            <span class="class-duration">
+                                <img src='static/icons/clock.svg' class='icon' alt='duration'>
+                                %s
+                            </span>
+                            <span class="class-memory">
+                                <img src='static/icons/database.svg' class='icon' alt='memory'>
+                                %.1f MB
+                            </span>
+                            <span class="class-cpu">
+                                <img src='static/icons/cpu.svg' class='icon' alt='cpu'>
+                                %.1f%%
+                            </span>
+                        </div>
                     </div>
                     <div class="status-summary">
                         <span class="status-count"><img src='static/icons/check-circle.svg' class='icon' alt='success'> %d</span>
@@ -178,9 +198,10 @@ public class ReportWriter {
                         <th>Method</th>
                         <th>Status</th>
                         <th>Duration</th>
+                        <th>Resources</th>
                         <th>Details</th>
                     </tr>
-        """, escapeHtml(className), formatDuration(classDuration), passed, failed, error));
+        """, escapeHtml(className), formatDuration(classDuration), avgMemoryUsage, avgCpuUsage, passed, failed, error));
 
         for (TestResult r : results) {
             boolean isFailed = "FAILED".equals(r.status) || "ERROR".equals(r.status);
@@ -192,6 +213,18 @@ public class ReportWriter {
                     <td>%s</td>
                     <td><span class="status-badge %s">%s %s</span></td>
                     <td class="duration"><img src='static/icons/clock.svg' class='icon' alt='duration'> %s</td>
+                    <td class="resources">
+                        <div class="resource-metrics">
+                            <div class="resource-metric">
+                                <img src='static/icons/database.svg' class='icon' alt='memory'>
+                                %.1f MB
+                            </div>
+                            <div class="resource-metric">
+                                <img src='static/icons/cpu.svg' class='icon' alt='cpu'>
+                                %.1f%%
+                            </div>
+                        </div>
+                    </td>
                     <td>
                 """, 
                 isFailed ? " class='failed'" : "",
@@ -199,7 +232,9 @@ public class ReportWriter {
                 statusClass,
                 statusIcon,
                 escapeHtml(formatStatus(r.status)),
-                formatDuration(r.durationMillis)
+                formatDuration(r.durationMillis),
+                (double)r.resources.memoryUsageMB,
+                r.resources.cpuUsagePercent
             ));
 
             if (r.message != null && !r.message.trim().isEmpty()) {
@@ -244,6 +279,8 @@ public class ReportWriter {
         copyResource("static/icons/alert-triangle.svg", "target/static/icons/alert-triangle.svg");
         copyResource("static/icons/chevron-down.svg", "target/static/icons/chevron-down.svg");
         copyResource("static/icons/clock.svg", "target/static/icons/clock.svg");
+        copyResource("static/icons/database.svg", "target/static/icons/database.svg");
+        copyResource("static/icons/cpu.svg", "target/static/icons/cpu.svg");
     }
 
     private static void copyResource(String source, String target) {

@@ -397,3 +397,44 @@ h1 {
     gap: 0.5rem;
   }
 }
+
+.class-metrics {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.class-memory,
+.class-cpu {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  opacity: 0.8;
+}
+
+.resources {
+  padding: 0.75rem 1.5rem !important;
+}
+
+.resource-metrics {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.resource-metric {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.resource-metric .icon {
+  width: 16px;
+  height: 16px;
+  opacity: 0.7;
+}
