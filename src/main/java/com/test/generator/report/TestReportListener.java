@@ -1,6 +1,5 @@
 package com.test.generator.report;
 
-
 import org.junit.platform.launcher.TestExecutionListener;
 import org.junit.platform.launcher.TestIdentifier;
 import org.junit.platform.launcher.TestPlan;
@@ -9,14 +8,24 @@ import org.junit.platform.engine.TestExecutionResult;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Map;
+import java.util.HashMap;
 
 public class TestReportListener implements TestExecutionListener {
 
     private final List<TestResult> results = new ArrayList<>();
+    private final Map<String, Long> testStartTimes = new HashMap<>();
     private boolean reportGenerated = false;
 
     public TestReportListener() {
         System.out.println("TestReportListener instantiated!");
+    }
+
+    @Override
+    public void executionStarted(TestIdentifier testIdentifier) {
+        if (testIdentifier.isTest()) {
+            testStartTimes.put(testIdentifier.getUniqueId(), System.currentTimeMillis());
+        }
     }
 
     @Override
@@ -45,6 +54,10 @@ public class TestReportListener implements TestExecutionListener {
                 }
             }
 
+            // Calculate test duration
+            long startTime = testStartTimes.getOrDefault(uniqueId, System.currentTimeMillis());
+            long duration = System.currentTimeMillis() - startTime;
+
             // Get the full error message including the assertion message
             String message = result.getThrowable()
                     .map(throwable -> {
@@ -62,8 +75,12 @@ public class TestReportListener implements TestExecutionListener {
                     className,
                     methodName,
                     result.getStatus().name(),
-                    message
+                    message,
+                    duration
             ));
+            
+            // Clean up the start time
+            testStartTimes.remove(uniqueId);
         }
     }
 

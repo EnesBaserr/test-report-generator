@@ -37,6 +37,20 @@ public class ReportWriter {
         };
     }
 
+    private static String formatDuration(long millis) {
+        if (millis < 1000) {
+            return millis + "ms";
+        }
+        long seconds = millis / 1000;
+        long remainingMillis = millis % 1000;
+        if (seconds < 60) {
+            return String.format("%d.%03ds", seconds, remainingMillis);
+        }
+        long minutes = seconds / 60;
+        seconds = seconds % 60;
+        return String.format("%dm %ds", minutes, seconds);
+    }
+
     private static String escapeHtml(String text) {
         if (text == null) return "";
         return text.replace("&", "&amp;")
@@ -64,6 +78,7 @@ public class ReportWriter {
             long passed = results.stream().filter(r -> "SUCCESSFUL".equals(r.status)).count();
             long failed = results.stream().filter(r -> "FAILED".equals(r.status)).count();
             long error = results.stream().filter(r -> "ERROR".equals(r.status)).count();
+            long totalDuration = results.stream().mapToLong(r -> r.durationMillis).sum();
     
             sb.append("""
                 <!DOCTYPE html>
@@ -78,8 +93,12 @@ public class ReportWriter {
                     <div class="container">
                         <div class="header">
                             <h1>Test Execution Report</h1>
+                            <div class="total-duration">
+                                <img src='static/icons/clock.svg' class='icon' alt='duration'>
+                                Total Duration: %s
+                            </div>
                         </div>
-            """);
+            """.formatted(formatDuration(totalDuration)));
 
             // Summary cards with icons
             sb.append("<div class='summary-bar'>")
@@ -136,11 +155,18 @@ public class ReportWriter {
         long passed = results.stream().filter(r -> "SUCCESSFUL".equals(r.status)).count();
         long failed = results.stream().filter(r -> "FAILED".equals(r.status)).count();
         long error = results.stream().filter(r -> "ERROR".equals(r.status)).count();
+        long classDuration = results.stream().mapToLong(r -> r.durationMillis).sum();
         
         sb.append(String.format("""
             <div class="test-class">
                 <div class="class-header">
-                    <span>%s</span>
+                    <div class="class-info">
+                        <span>%s</span>
+                        <span class="class-duration">
+                            <img src='static/icons/clock.svg' class='icon' alt='duration'>
+                            %s
+                        </span>
+                    </div>
                     <div class="status-summary">
                         <span class="status-count"><img src='static/icons/check-circle.svg' class='icon' alt='success'> %d</span>
                         <span class="status-count"><img src='static/icons/x-circle.svg' class='icon' alt='failed'> %d</span>
@@ -151,9 +177,10 @@ public class ReportWriter {
                     <tr>
                         <th>Method</th>
                         <th>Status</th>
+                        <th>Duration</th>
                         <th>Details</th>
                     </tr>
-        """, escapeHtml(className), passed, failed, error));
+        """, escapeHtml(className), formatDuration(classDuration), passed, failed, error));
 
         for (TestResult r : results) {
             boolean isFailed = "FAILED".equals(r.status) || "ERROR".equals(r.status);
@@ -164,13 +191,15 @@ public class ReportWriter {
                 <tr%s>
                     <td>%s</td>
                     <td><span class="status-badge %s">%s %s</span></td>
+                    <td class="duration"><img src='static/icons/clock.svg' class='icon' alt='duration'> %s</td>
                     <td>
                 """, 
                 isFailed ? " class='failed'" : "",
                 escapeHtml(r.name), 
                 statusClass,
                 statusIcon,
-                escapeHtml(formatStatus(r.status))
+                escapeHtml(formatStatus(r.status)),
+                formatDuration(r.durationMillis)
             ));
 
             if (r.message != null && !r.message.trim().isEmpty()) {
@@ -214,6 +243,7 @@ public class ReportWriter {
         copyResource("static/icons/x-circle.svg", "target/static/icons/x-circle.svg");
         copyResource("static/icons/alert-triangle.svg", "target/static/icons/alert-triangle.svg");
         copyResource("static/icons/chevron-down.svg", "target/static/icons/chevron-down.svg");
+        copyResource("static/icons/clock.svg", "target/static/icons/clock.svg");
     }
 
     private static void copyResource(String source, String target) {

@@ -9,12 +9,14 @@ public class TestResult {
     public String name;
     public String status;
     public String message;
+    public long durationMillis; // Duration in milliseconds
 
-    public TestResult(String className, String name, String status, String message) {
+    public TestResult(String className, String name, String status, String message, long durationMillis) {
         this.className = className;
         this.name = name;
         this.status = status;
         this.message = message;
+        this.durationMillis = durationMillis;
     }
 }
 
