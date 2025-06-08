@@ -177,6 +177,10 @@ The HTML report includes:
 - Test execution duration for each test and overall suite
 - Clean, modern UI with collapsible sections
 
+You can view a sample report here: [Example Test Report](https://htmlpreview.github.io/?https://github.com/EnesBaserr/test-report-generator/blob/main/docs/sample-report.html)
+
+The actual report will be generated at `target/test-report.html` after running your tests with `mvn test`.
+
 ## Building from Source
 
 To build the project:
