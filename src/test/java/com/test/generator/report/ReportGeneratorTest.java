@@ -14,11 +14,13 @@ import java.util.concurrent.TimeUnit;
 public class ReportGeneratorTest {
     
     @Test
+    @Priority(PriorityLevel.LOW)
     void demonstrateSuccessfulTest() {
         assertTrue(true, "This test demonstrates a successful test case");
     }
     
     @Test
+    @Priority(PriorityLevel.MEDIUM)
     void demonstrateTestWithAssertions() {
         String expected = "Hello";
         String actual = "Hello";
@@ -26,6 +28,7 @@ public class ReportGeneratorTest {
     }
 
     @Test
+    @Priority(PriorityLevel.HIGH)
     void cpuIntensiveTest() {
         // Perform CPU-intensive calculation
         long result = 0;
@@ -36,6 +39,7 @@ public class ReportGeneratorTest {
     }
 
     @Test
+    @Priority(PriorityLevel.HIGH)
     void memoryIntensiveTest() {
         // Allocate and manipulate memory
         List<byte[]> memoryBlocks = new ArrayList<>();

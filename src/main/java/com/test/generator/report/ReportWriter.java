@@ -199,6 +199,7 @@ public class ReportWriter {
                         <th>Status</th>
                         <th>Duration</th>
                         <th>Resources</th>
+                        <th>Priority</th>
                         <th>Details</th>
                     </tr>
         """, escapeHtml(className), formatDuration(classDuration), avgMemoryUsage, avgCpuUsage, passed, failed, error));
@@ -225,6 +226,7 @@ public class ReportWriter {
                             </div>
                         </div>
                     </td>
+                    <td>%s</td>
                     <td>
                 """, 
                 isFailed ? " class='failed'" : "",
@@ -234,7 +236,8 @@ public class ReportWriter {
                 escapeHtml(formatStatus(r.status)),
                 formatDuration(r.durationMillis),
                 (double)r.resources.memoryUsageMB,
-                r.resources.cpuUsagePercent
+                r.resources.cpuUsagePercent,
+                r.priority != null ? formatPriorityBadge(r.priority) : "-"
             ));
 
             if (r.message != null && !r.message.trim().isEmpty()) {
@@ -256,6 +259,15 @@ public class ReportWriter {
 
         sb.append("</table></div>");
         return sb.toString();
+    }
+
+    private static String formatPriorityBadge(PriorityLevel priority) {
+        return String.format(
+            "<span class='priority-badge' style='background-color: %s; color: %s'>%s</span>",
+            priority.getBackgroundColor(),
+            priority.getTextColor(),
+            priority.getDisplayName()
+        );
     }
 
     private static void createResourceDirectories() {

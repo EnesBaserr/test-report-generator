@@ -438,3 +438,13 @@ h1 {
   height: 16px;
   opacity: 0.7;
 }
+
+/* Priority badge styles */
+.priority-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}

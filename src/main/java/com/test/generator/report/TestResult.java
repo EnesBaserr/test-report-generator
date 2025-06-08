@@ -14,7 +14,7 @@ public class TestResult {
     // New fields for enhanced reporting
     public String description;        // Test description from annotation
     public String[] categories;       // Test categories/tags
-    public String priority;           // Test priority level
+    public PriorityLevel priority;    // Test priority level
     public String[] dependencies;     // Test dependencies
     public Object[] parameters;       // Test parameters
     public String setupInfo;          // Setup information
@@ -54,7 +54,7 @@ public class TestResult {
         return this;
     }
     
-    public TestResult withPriority(String priority) {
+    public TestResult withPriority(PriorityLevel priority) {
         this.priority = priority;
         return this;
     }

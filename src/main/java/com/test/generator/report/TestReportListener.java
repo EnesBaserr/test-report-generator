@@ -4,6 +4,8 @@ import org.junit.platform.launcher.TestExecutionListener;
 import org.junit.platform.launcher.TestIdentifier;
 import org.junit.platform.launcher.TestPlan;
 import org.junit.platform.engine.TestExecutionResult;
+import com.test.generator.report.Priority;
+import com.test.generator.report.PriorityLevel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -107,6 +109,40 @@ public class TestReportListener implements TestExecutionListener {
                     })
                     .orElse("");
 
+            // Get the priority annotation if present
+            PriorityLevel priority = null;
+            try {
+                // Get the full class name from the unique ID
+                String fullClassName = null;
+                for (String segment : segments) {
+                    if (segment.startsWith("[class:")) {
+                        fullClassName = segment.substring(7, segment.length() - 1);
+                        break;
+                    }
+                }
+                
+                System.out.println("Full class name: " + fullClassName);
+                System.out.println("Method name: " + methodName);
+                
+                if (fullClassName != null) {
+                    Class<?> testClass = Class.forName(fullClassName);
+                    // Print all available methods for debugging
+                    System.out.println("Available methods in class:");
+                    for (java.lang.reflect.Method method : testClass.getDeclaredMethods()) {
+                        System.out.println(" - " + method.getName());
+                    }
+                    
+                    java.lang.reflect.Method method = testClass.getDeclaredMethod(methodName);
+                    Priority priorityAnnotation = method.getAnnotation(Priority.class);
+                    if (priorityAnnotation != null) {
+                        priority = priorityAnnotation.value();
+                    }
+                }
+            } catch (Exception e) {
+                System.err.println("Failed to get priority annotation: " + e.getMessage());
+                e.printStackTrace();
+            }
+
             // Create test result with resource metrics
             TestResult testResult = new TestResult(
                     className,
@@ -116,9 +152,10 @@ public class TestReportListener implements TestExecutionListener {
                     duration
             );
             
-            // Add resource metrics
+            // Add resource metrics and priority
             TestResult.ResourceMetrics metrics = captureResourceMetrics(uniqueId);
-            testResult.withResourceMetrics(metrics.memoryUsageMB, metrics.cpuUsagePercent);
+            testResult.withResourceMetrics(metrics.memoryUsageMB, metrics.cpuUsagePercent)
+                     .withPriority(priority);
             
             results.add(testResult);
             
