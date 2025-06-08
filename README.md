@@ -179,6 +179,11 @@ The HTML report includes:
 
 You can view a sample report here: [Example Test Report](docs/sample-report.html)
 
+![image](https://github.com/user-attachments/assets/24ea180d-8170-4003-8de3-38331aff6133)
+![image](https://github.com/user-attachments/assets/a3a4de72-08da-43ed-b30e-9418ad377c3b)
+
+
+
 The actual report will be generated at `target/test-report.html` after running your tests with `mvn test`.
 
 ## Building from Source
